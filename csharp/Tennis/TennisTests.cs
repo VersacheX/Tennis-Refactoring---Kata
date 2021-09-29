@@ -1,11 +1,14 @@
-  
-using System;
+
 using NUnit.Framework;
+using System;
 
 namespace Tennis
 {
-	public class TennisGameTest
+    public class TennisGameTest
 	{
+		private string _player1Name = "player1";
+		private string _player2Name = "player2";
+
 		[TestCase( 0,  0, "Love-All")]
 		[TestCase( 1,  1, "Fifteen-All")]
 		[TestCase( 2,  2, "Thirty-All")]
@@ -41,15 +44,15 @@ namespace Tennis
 		[TestCase(14, 16, "Win for player2")]
 		public void CheckTennisGame(int player1Score, int player2Score, string expectedScore)
 		{
-			var game = new TennisGame("player1", "player2");
+			var game = new TennisGame(this._player1Name, this._player2Name);
 
-			var highestScore = Math.Max(player1Score, player2Score);
-			for (var i = 0; i < highestScore; i++)
+			int highestScore = Math.Max(player1Score, player2Score);
+			for (int i = 0; i < highestScore; i++)
 			{
 				if (i < player1Score)
-					game.WonPoint("player1");
+					game.WonPoint(this._player1Name);
 				if (i < player2Score)
-					game.WonPoint("player2");
+					game.WonPoint(this._player2Name);
 			}
 			Assert.AreEqual(expectedScore, game.GetScore());
 		}
@@ -57,12 +60,12 @@ namespace Tennis
 		[Test]
 		public void CheckRealisticGame()
 		{
-			var game = new TennisGame("player1", "player2");
+			TennisGame game = new TennisGame(this._player1Name, this._player2Name);
 
-			string[] points = { "player1", "player1", "player2", "player2", "player1", "player1" };
-			string[] expectedScores = { "Fifteen-Love", "Thirty-Love", "Thirty-Fifteen", "Thirty-All", "Forty-Thirty", "Win for player1" };
+			string[] points = { this._player1Name, this._player1Name, this._player2Name, this._player2Name, this._player1Name, this._player1Name };
+			string[] expectedScores = { "Fifteen-Love", "Thirty-Love", "Thirty-Fifteen", "Thirty-All", "Forty-Thirty", string.Format("Win for {0}", this._player1Name) };
 
-			for (var i = 0; i < 6; i++)
+			for (int i = 0; i < points.Length; i++)
 			{
 				game.WonPoint(points[i]);
 				Assert.AreEqual(expectedScores[i], game.GetScore());
